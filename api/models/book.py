@@ -2,7 +2,7 @@ from api.utils.configurations.extensions import db
 from datetime import datetime
 
 
-class Book(db.Model):  # type: ignore
+class Book(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False, index=True)
@@ -13,5 +13,8 @@ class Book(db.Model):  # type: ignore
     active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     deactivated_at = db.Column(db.DateTime)
+
+    total_copies = db.Column(db.Integer, nullable=False, default=0)
+    available_copies = db.Column(db.Integer, nullable=False, default=0)
 
     loans = db.relationship('Loan', backref='book', lazy=True)

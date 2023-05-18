@@ -34,5 +34,5 @@ api_info = {
         "/students/active": "GET: Obter estudantes ativos",
         "/students/inactive": "GET: Obter estudantes inativos",
     },
-    "version": "1.0"
+    "version": "0.1.0"
 }

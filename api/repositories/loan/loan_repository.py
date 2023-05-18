@@ -33,8 +33,12 @@ class LoanRepository:
         if not book:
             raise BookNotFoundError(f"No book found with id {book_id}")
 
+        if book.available_copies <= 0:
+            raise ValueError("No available copies of the book.")
+
         new_loan = Loan(student_id=student_id, book_id=book_id)
         db.session.add(new_loan)
+        book.available_copies -= 1
         db.session.commit()
 
         receipt = {
@@ -56,6 +60,10 @@ class LoanRepository:
         loan.returned = True
         brt_timezone = pytz.timezone('America/Sao_Paulo')
         loan.deactivated_at = datetime.now(brt_timezone)
+        db.session.commit()
+
+        book = Book.query.get(loan.book_id)
+        book.available_copies += 1
         db.session.commit()
 
         return {'deactivated_at': loan.deactivated_at.strftime('%d/%m/%Y %H:%M:%S')}
@@ -106,6 +114,10 @@ class LoanRepository:
             fine = (days_overdue - 7) * 0.50
 
         loan.returned = True
+        db.session.commit()
+
+        book = Book.query.get(loan.book_id)
+        book.available_copies += 1
         db.session.commit()
 
         return {

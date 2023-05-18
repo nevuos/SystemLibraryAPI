@@ -1,5 +1,4 @@
 from typing import Any, Dict
-from typing import Any
 import pytz
 from flask import url_for
 from datetime import datetime
@@ -16,7 +15,10 @@ class BookNotFoundError(Exception):
 
 class BookRepository:
     @staticmethod
-    def create(title, author, category) -> Book:
+    def create(title, author, category, total_copies) -> Book:
+        if total_copies <= 0:
+            raise ValueError("Total copies must be a positive integer.")
+
         with db.session.begin_nested():
             code_sequence = CodeSequence.query.with_for_update().first()
             if code_sequence is None:
@@ -39,16 +41,19 @@ class BookRepository:
             author=author,
             category=category,
             barcode_download_url=barcode_download_url,
-            created_at=created_at
+            created_at=created_at,
+            total_copies=total_copies,
+            available_copies=total_copies
         )
         db.session.add(book)
         db.session.commit()
 
-        if not book:
+        if not book or book.total_copies != total_copies:
             raise BookNotFoundError(
-                f"Book {title} by {author} in {category} could not be created.")
+                f"Book {title} by {author} in {category} with total copies {total_copies} could not be created.")
 
         return book
+
 
     @staticmethod
     def deactivate_book(book_id) -> dict:
