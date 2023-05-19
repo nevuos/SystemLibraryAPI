@@ -1,0 +1,18 @@
+version: "3"
+services:
+  redis:
+    image: redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+  app:
+    build: .
+    volumes:
+      - ./instance/library.db:/SystemLibraryApi/instance/library.db
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+volumes:
+  redis_data:

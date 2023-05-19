@@ -1,5 +1,5 @@
 from api.repositories.download.download_repository import get_book_by_bar_code
-from api.utils.functions.barcode_function import generate_barcode
+from api.utils.functions.barcode.barcode_function import generate_barcode
 from api.utils.handlers.error_handlers import handle_errors
 
 

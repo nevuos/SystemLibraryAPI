@@ -5,7 +5,7 @@ from datetime import datetime
 from api.models.book import Book
 from api.models.code_sequence import CodeSequence
 from api.utils.configurations.extensions import db
-from api.utils.functions.barcode_function import generate_barcode
+from api.utils.functions.barcode.barcode_function import generate_barcode
 from api.utils.cache.cache import cache
 
 
@@ -53,7 +53,6 @@ class BookRepository:
                 f"Book {title} by {author} in {category} with total copies {total_copies} could not be created.")
 
         return book
-
 
     @staticmethod
     def deactivate_book(book_id) -> dict:
@@ -115,6 +114,8 @@ class BookRepository:
             'category': book.category,
             'bar_code': book.bar_code,
             'barcode_download_url': book.barcode_download_url,
+            'total_copies': book.total_copies,
+            'available_copies': book.available_copies,
             'created_at': book.created_at.strftime('%d/%m/%Y %H:%M:%S'),
             'status': 'active' if book.active else 'inactive'
         }
@@ -133,7 +134,9 @@ class BookRepository:
             'id': book.id,
             'title': book.title,
             'author': book.author,
-            'category': book.category
+            'category': book.category,
+            'total_copies': book.total_copies,
+            'available_copies': book.available_copies
         }
 
     @staticmethod

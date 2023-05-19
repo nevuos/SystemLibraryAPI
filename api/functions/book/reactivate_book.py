@@ -1,10 +1,9 @@
 from typing import Dict, Any
-from api.models.book import Book
 from api.repositories.book.book_repository import BookRepository
 
 
-def reactivate_book(book_id: int, total_copies: int, available_copies: int) -> Dict[str, Any]:
-    book_dict: Dict[str, Any] = BookRepository.reactivate_book(book_id, total_copies, available_copies)
+def reactivate_book(book_id: int) -> Dict[str, Any]:
+    book_dict: Dict[str, Any] = BookRepository.reactivate_book(book_id)
     return {
         'id': book_dict['id'],
         'title': book_dict['title'],

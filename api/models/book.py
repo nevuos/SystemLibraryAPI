@@ -2,7 +2,7 @@ from api.utils.configurations.extensions import db
 from datetime import datetime
 
 
-class Book(db.Model):
+class Book(db.Model):  # type: ignore
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False, index=True)

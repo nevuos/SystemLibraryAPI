@@ -1,7 +1,3 @@
-"""
-Este é o módulo de inicialização do Flask para a aplicação.
-"""
-
 from flask import Flask
 from api.routes.book.book_routes import book_bp
 from api.routes.download.download_routes import download_bp
@@ -11,6 +7,9 @@ from api.routes.student.student_routes import student_bp
 from api.utils.configurations.config import Config
 from api.utils.configurations.extensions import db, migrate
 from api.utils.cache.cache import init_cache
+from api.utils.functions.important.check_internet_function import check_internet
+from api.utils.update.check_update_function import check_update
+from api.utils.functions.important.check_database_function import check_database
 
 
 def create_app():
@@ -36,4 +35,11 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
+
+    check_internet()
+
+    check_update()
+
+    check_database()
+
     app.run()
