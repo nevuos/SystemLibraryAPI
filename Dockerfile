@@ -22,6 +22,12 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
     && python get-pip.py \
     && rm get-pip.py
 
+# Copiar os arquivos de requirements para o diretório de trabalho
+COPY requirements.txt .
+
+# Instalar as dependências do projeto
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Instalar o pysqlcipher3
 RUN pip install pysqlcipher3
 
