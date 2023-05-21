@@ -1,5 +1,5 @@
-# Definir a imagem base
-FROM python:3.8
+# Use a imagem oficial do Python 3.8 como base
+FROM python:3.8-slim-buster
 
 # Configurar o diretório de trabalho
 WORKDIR /SystemLibraryApi

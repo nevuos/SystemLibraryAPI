@@ -8,9 +8,9 @@ from api.utils.configurations.config import Config
 from api.utils.configurations.extensions import db, migrate
 from api.utils.cache.cache import init_cache
 from api.utils.functions.important.check_internet_function import check_internet
+from api.utils.logger.logger import setup_logger
 from api.utils.update.check_update_function import check_update
 from api.utils.functions.important.check_database_function import check_database
-
 
 def create_app():
     """
@@ -18,9 +18,12 @@ def create_app():
     """
     flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
-
+    
     db.init_app(flask_app)
     migrate.init_app(flask_app, db)
+
+    with flask_app.app_context():
+        db.create_all()
 
     flask_app.register_blueprint(student_bp, url_prefix='/api')
     flask_app.register_blueprint(book_bp, url_prefix='/api')
@@ -32,14 +35,12 @@ def create_app():
 
     return flask_app
 
-
 if __name__ == '__main__':
     app = create_app()
-
-    check_internet()
-
-    check_update()
-
-    check_database()
+    logger = setup_logger(__name__)
+    
+    check_internet(logger)
+    check_update(logger)
+    check_database(app, logger)
 
     app.run()

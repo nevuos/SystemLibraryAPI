@@ -19,13 +19,12 @@ class BookRepository:
         if total_copies <= 0:
             raise ValueError("Total copies must be a positive integer.")
 
-        with db.session.begin_nested():
-            code_sequence = CodeSequence.query.with_for_update().first()
-            if code_sequence is None:
-                code_sequence = CodeSequence(id=1)
-                db.session.add(code_sequence)
-            bar_code = code_sequence.id
-            code_sequence.id += 1
+        code_sequence = CodeSequence.query.with_for_update().first()
+        if code_sequence is None:
+            code_sequence = CodeSequence(id=1)
+            db.session.add(code_sequence)
+        bar_code = code_sequence.id
+        code_sequence.id += 1
 
         db.session.commit()
 
