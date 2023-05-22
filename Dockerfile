@@ -1,12 +1,12 @@
-# Use a imagem oficial do Python 3.8 como base
-FROM python:3.8-slim-buster
+# Use a imagem oficial do Python 3.10 como base
+FROM python:3.10-slim
 
 # Configurar o diretório de trabalho
 WORKDIR /SystemLibraryApi
 
 # Instalar as dependências de sistema
 RUN apt-get update \
-    && apt-get install -y build-essential tclsh pkg-config libssl-dev libsqlite3-dev git libffi-dev python3-dev curl \
+    && apt-get install -y build-essential tclsh pkg-config libssl-dev libsqlite3-dev git libffi-dev python3-dev curl libsqlcipher-dev libcairo2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Clonar o repositório do sqlcipher
