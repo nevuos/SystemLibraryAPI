@@ -10,5 +10,5 @@ def download_image_handler(bar_code):
     response = make_response(barcode_img_bytes)
     response.headers.set('Content-Type', 'image/png')
     response.headers.set('Content-Disposition',
-                         f'attachment; filename="{bar_code}.png"')
+                        f'attachment; filename="{bar_code}.png"')
     return response

@@ -1,4 +1,5 @@
 from flask import Blueprint
+from flask_jwt_extended import jwt_required
 from api.request_handlers.book.book_handlers import (
     handle_create_book_request,
     handle_deactivate_book_request,
@@ -20,21 +21,25 @@ book_bp = Blueprint('book_routes', __name__)
 
 
 @book_bp.route('/books', methods=['POST'])
+@jwt_required
 def create_book():
     return handle_create_book_request()
 
 
 @book_bp.route('/books/<int:book_id>/deactivate', methods=['POST'])
+@jwt_required
 def deactivate_book(book_id):
     return handle_deactivate_book_request(book_id)
 
 
 @book_bp.route('/books', methods=['GET'])
+@jwt_required
 def get_books():
     return handle_get_books_request()
 
 
 @book_bp.route('/books/<int:book_id>/reactivate', methods=['POST'])
+@jwt_required
 def reactivate_book(book_id):
     return handle_reactivate_book_request(book_id)
 
@@ -65,6 +70,7 @@ def get_book_by_id(book_id):
 
 
 @book_bp.route('/books/<int:book_id>', methods=['PUT'])
+@jwt_required
 def update_book(book_id):
     return handle_update_book_request(book_id)
 
