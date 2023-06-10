@@ -19,14 +19,14 @@ from api.request_handlers.student.student_handlers import (
 student_bp = Blueprint('student_routes', __name__)
 
 
-@student_bp.route('/students', methods=['POST'])
 @jwt_required
+@student_bp.route('/students', methods=['POST'])
 def add_student_route():
     return handle_create_student_request()
 
 
-@student_bp.route('/students/<int:student_id>', methods=['PUT'])
 @jwt_required
+@student_bp.route('/students/<int:student_id>', methods=['PUT'])
 def update_student_route(student_id):
     return handle_update_student_request(student_id)
 
@@ -41,14 +41,14 @@ def get_students_by_name_route():
     return handle_search_students_by_name_request()
 
 
-@student_bp.route('/students/<int:student_id>/deactivate', methods=['POST'])
 @jwt_required
+@student_bp.route('/students/<int:student_id>/deactivate', methods=['POST'])
 def deactivate_student_route(student_id):
     return handle_deactivate_student_request(student_id)
 
 
-@student_bp.route('/students/<int:student_id>/reactivate', methods=['POST'])
 @jwt_required
+@student_bp.route('/students/<int:student_id>/reactivate', methods=['POST'])
 def reactivate_student_route(student_id):
     return handle_reactivate_student_request(student_id)
 

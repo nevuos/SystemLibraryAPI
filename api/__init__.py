@@ -40,12 +40,13 @@ def create_app():
         scheduler.add_job(lambda: do_backup(logger), CronTrigger(hour=12))
         scheduler.start()
 
+    flask_app.register_blueprint(auth_bp, url_prefix='/api/auth')
     flask_app.register_blueprint(student_bp, url_prefix='/api')
     flask_app.register_blueprint(book_bp, url_prefix='/api')
     flask_app.register_blueprint(loan_bp, url_prefix='/api')
     flask_app.register_blueprint(download_bp, url_prefix='/api')
     flask_app.register_blueprint(index_bp, url_prefix='/api')
-    flask_app.register_blueprint(auth_bp, url_prefix='/api/auth')  # Registre o blueprint auth_bp
+
 
     init_cache(flask_app)
 
