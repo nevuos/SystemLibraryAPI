@@ -22,7 +22,7 @@ INFO_SOURCE_FOLDER_MISSING = "A pasta de origem {source_folder} não existe!"
 INFO_BACKUP_FOLDER_CREATED = "Pasta de backup {backup_folder} criada com sucesso!"
 INFO_BACKUP_CREATED_LOCALLY = "Backup de {zip_file_name} realizado localmente com sucesso!"
 
-# Mensagens relacionadas ao backup no Supabase
+# Mensagens relacionadas ao backup no Google Drive
 INFO_BACKUP_FOLDER_MISSING = "A pasta de backup local {backup_folder} não existe!"
-INFO_BACKUP_UPLOAD_SUCCESS = "Backup de {file_name} para Supabase realizado com sucesso!"
-ERROR_BACKUP_UPLOAD_FAILURE = "Falha ao fazer backup de {file_name} para Supabase. Tentativa {attempt}. Erro: {error}"
+INFO_BACKUP_UPLOAD_SUCCESS = "Backup de {file_name} para Google Drive realizado com sucesso!"
+ERROR_BACKUP_UPLOAD_FAILURE = "Falha ao fazer backup de {file_name} para Google Drive. Tentativa {attempt}. Erro: {error}"

@@ -1,5 +1,4 @@
 from flask import Blueprint, request
-from flask_jwt_extended import jwt_required
 from api.request_handlers.student.student_handlers import (
     handle_create_student_request,
     handle_get_all_students_request,
@@ -19,13 +18,11 @@ from api.request_handlers.student.student_handlers import (
 student_bp = Blueprint('student_routes', __name__)
 
 
-@jwt_required
 @student_bp.route('/students', methods=['POST'])
 def add_student_route():
     return handle_create_student_request()
 
 
-@jwt_required
 @student_bp.route('/students/<int:student_id>', methods=['PUT'])
 def update_student_route(student_id):
     return handle_update_student_request(student_id)
@@ -41,13 +38,11 @@ def get_students_by_name_route():
     return handle_search_students_by_name_request()
 
 
-@jwt_required
 @student_bp.route('/students/<int:student_id>/deactivate', methods=['POST'])
 def deactivate_student_route(student_id):
     return handle_deactivate_student_request(student_id)
 
 
-@jwt_required
 @student_bp.route('/students/<int:student_id>/reactivate', methods=['POST'])
 def reactivate_student_route(student_id):
     return handle_reactivate_student_request(student_id)

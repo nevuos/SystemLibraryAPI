@@ -1,7 +1,9 @@
-from supabase import create_client, Client
 import os
 import zipfile
 import datetime
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
 from api.utils.logger.messages_logger import (
     INFO_SOURCE_FOLDER_MISSING,
     INFO_BACKUP_FOLDER_CREATED,
@@ -11,22 +13,15 @@ from api.utils.logger.messages_logger import (
     ERROR_BACKUP_UPLOAD_FAILURE,
 )
 
-# Inicializa o cliente do Supabase
-url: str = "https://paxkomehdsxnrmnyzlnc.supabase.co"
-key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBheGtvbWVoZHN4bnJtbnl6bG5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODYzOTk2ODgsImV4cCI6MjAwMTk3NTY4OH0.67iaymQtcPXdbiIPFI3cAR0O-RZXm0LAyCWMiHs_--w"
-supabase: Client = create_client(url, key)
-
 
 def backup_data_locally(logger):
-    source_folder = "./instance"  # pasta de onde os dados serão copiados
-    backup_folder = "./backup"  # pasta onde os backups locais serão armazenados
+    source_folder = "./instance" 
+    backup_folder = "./backup"  
 
-    # verifica se a pasta de origem existe
     if not os.path.isdir(source_folder):
         logger.info(INFO_SOURCE_FOLDER_MISSING.format(source_folder=source_folder))
         return
 
-    # verifica se a pasta de backup existe, caso contrário, cria
     if not os.path.exists(backup_folder):
         try:
             os.makedirs(backup_folder)
@@ -35,7 +30,6 @@ def backup_data_locally(logger):
             logger.error(INFO_BACKUP_FOLDER_MISSING.format(backup_folder=backup_folder))
             return
 
-    # cria um arquivo zip com os dados da pasta de origem
     zip_file_name = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_backup.zip"
     zip_file_path = os.path.join(backup_folder, zip_file_name)
     zipf = zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED)
@@ -49,26 +43,43 @@ def backup_data_locally(logger):
     logger.info(INFO_BACKUP_CREATED_LOCALLY.format(zip_file_name=zip_file_name))
 
 
-def backup_data_to_supabase(logger):
-    bucket_name = "Backup"  # o nome do seu bucket no Supabase
-    subfolder_name = "teste"  # nome da subpasta que você quer criar no bucket
-    backup_folder = "./backup"  # pasta onde os backups locais são armazenados
+def backup_data_to_google_drive(logger):
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    credentials_path = os.path.abspath(os.path.join(script_dir, '..', '..', '..', 'credentials.json'))
+    credentials = Credentials.from_service_account_file(credentials_path)
 
-    # verifica se a pasta de backup local existe
+    drive_service = build('drive', 'v3', credentials=credentials)
+    
+    backup_folder = "./backup"
+    folder_id = "1HKuWr2BcDpXYFEBoL0lcXoApx7jlPgvT"  
+
     if not os.path.isdir(backup_folder):
         logger.info(INFO_BACKUP_FOLDER_MISSING.format(backup_folder=backup_folder))
         return
 
-    # percorre todos os arquivos no diretório de backup e os carrega no Supabase
-    for file_name in os.listdir(backup_folder):
-        source = os.path.join(backup_folder, file_name)
+    files = sorted(os.listdir(backup_folder), key=lambda x: os.path.getmtime(os.path.join(backup_folder, x)))
 
-        for attempt in range(3):  # tente fazer upload do arquivo 3 vezes
-            try:
-                with open(source, 'rb') as file:
-                    response = supabase.storage.upload(bucket_name + "/" + subfolder_name + "/" + file_name, file)
-                    if response.status_code == 200:  # se o status for 200, o upload foi bem-sucedido
-                        logger.info(INFO_BACKUP_UPLOAD_SUCCESS.format(file_name=file_name))
-                        break
-            except Exception as e:
-                logger.error(ERROR_BACKUP_UPLOAD_FAILURE.format(file_name=file_name, attempt=attempt + 1, error=str(e)))
+    if not files:
+        return
+
+    file_name = files[-1]
+    source = os.path.join(backup_folder, file_name)
+    media = MediaFileUpload(source, resumable=True)
+        
+    request = drive_service.files().create(
+        media_body=media,
+        body={
+            'name': file_name,
+            'parents': [folder_id]
+        }
+    )
+    response = None
+        
+    while response is None:
+        try:
+            status, response = request.next_chunk()
+            if status:
+                logger.info("Uploaded %d%%." % int(status.progress() * 100))
+            logger.info(INFO_BACKUP_UPLOAD_SUCCESS.format(file_name=file_name))
+        except Exception as e:
+            logger.error(ERROR_BACKUP_UPLOAD_FAILURE.format(file_name=file_name, error=str(e)))

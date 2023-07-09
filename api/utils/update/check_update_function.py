@@ -2,7 +2,7 @@ import requests
 import subprocess
 import os
 from api.utils.functions.important.check_internet_function import check_internet
-from api.utils.logger.messager_logger import (
+from api.utils.logger.messages_logger import (
     INFO_UPDATE_AVAILABLE,
     INFO_UP_TO_DATE,
     INFO_UPDATE_SUCCESS,

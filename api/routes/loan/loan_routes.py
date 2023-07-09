@@ -1,5 +1,4 @@
 from flask import Blueprint, request
-from flask_jwt_extended import jwt_required
 from api.functions.loan import (
     create_loan,
     return_loan,
@@ -11,26 +10,22 @@ from api.functions.loan import (
 loan_bp = Blueprint('loan_routes', __name__)
 
 
-@jwt_required
 @loan_bp.route('/loans', methods=['POST'])
 def handle_create_loan_request():
     data = request.get_json()
     return create_loan(data.get('student_id'), data.get('book_id'))
 
 
-@jwt_required
 @loan_bp.route('/loans/<loan_id>/return', methods=['POST'])
 def handle_return_loan_request(loan_id):
     return return_loan(loan_id)
 
 
-@jwt_required
 @loan_bp.route('/loans/<loan_id>/deactivate', methods=['POST'])
 def handle_deactivate_loan_request(loan_id):
     return deactivate_loan(loan_id)
 
 
-@jwt_required
 @loan_bp.route('/loans/<loan_id>/reactivate', methods=['POST'])
 def handle_reactivate_loan_request(loan_id):
     return reactivate_loan(loan_id)

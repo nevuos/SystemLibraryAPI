@@ -1,6 +1,4 @@
 from flask import Flask
-from flask_jwt_extended import JWTManager
-from api.auth import auth_bp
 from api.routes.book.book_routes import book_bp
 from api.routes.download.download_routes import download_bp
 from api.routes.index.index_routes import index_bp
@@ -24,7 +22,6 @@ def create_app():
     flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
 
-    jwt = JWTManager(flask_app)  # Inicialização do JWTManager
 
     db.init_app(flask_app)
     migrate.init_app(flask_app, db)
@@ -40,7 +37,6 @@ def create_app():
         scheduler.add_job(lambda: do_backup(logger), CronTrigger(hour=12))
         scheduler.start()
 
-    flask_app.register_blueprint(auth_bp, url_prefix='/api/auth')
     flask_app.register_blueprint(student_bp, url_prefix='/api')
     flask_app.register_blueprint(book_bp, url_prefix='/api')
     flask_app.register_blueprint(loan_bp, url_prefix='/api')

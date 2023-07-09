@@ -1,8 +1,12 @@
 from functools import wraps
 from flask import jsonify
-from typing import Any, Callable, Dict, Tuple
-from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
-from api.auth.repositories.auth_repository import AuthenticationError
+from functools import wraps
+from flask import jsonify
+from werkzeug.exceptions import HTTPException
+from typing import Dict, Tuple
+import traceback
+import sys
+
 
 
 error_mapping: Dict[type, Tuple[int, str]] = {
@@ -12,27 +16,33 @@ error_mapping: Dict[type, Tuple[int, str]] = {
     FileNotFoundError: (404, "File not found"),
     PermissionError: (403, "Permission denied"),
     TimeoutError: (408, "Request timeout"),
-    AuthenticationError: (401, "Authentication failed"),
-    ExpiredSignatureError: (401, "Token expired"),
-    InvalidTokenError: (401, "Invalid token"),
     Exception: (500, "Internal server error")
 }
 
 
-def handle_errors(func: Callable[..., Tuple[Any, int]]) -> Callable[..., Tuple[Any, int]]:
+def handle_errors(func):
     @wraps(func)
-    def error_wrapper(*args: Any, **kwargs: Any) -> Tuple[Any, int]:
+    def error_wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            error_type: type = type(e)
-            error_message: str = "An error occurred during the operation."
-
+            error_type = type(e)
             if error_type in error_mapping:
                 status_code, error_message = error_mapping[error_type]
+                error_details = str(e)
+            elif issubclass(error_type, HTTPException):
+                status_code, error_message = e.code, e.description
+                error_details = str(e)
             else:
-                status_code, _ = error_mapping[Exception]
+                status_code, error_message = 500, "An unexpected error occurred during the operation."
+                error_details = str(e)
 
-            return jsonify({'error': error_message, 'details': str(e)}), status_code
-
+            traceback_details = "".join(traceback.format_exception(*sys.exc_info()))
+            error_response = {
+                'error_type': str(error_type.__name__),
+                'error_message': error_message,
+                'error_details': error_details,
+                'traceback': traceback_details,
+            }
+            return jsonify(error_response), status_code
     return error_wrapper
