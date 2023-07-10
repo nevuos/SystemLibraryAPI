@@ -30,7 +30,7 @@ def generate_barcode(code, category, font_size=30, dpi=300, barcode_width=400) -
     new_img = Image.new('RGB', (barcode_img.width, new_img_height), 'white')
     draw = ImageDraw.Draw(new_img)
 
-    font = ImageFont.truetype('arial', font_size)
+    font = ImageFont.truetype('Arial', font_size)
     text_width, text_height = draw.textsize(category, font=font)
 
     text_x = (new_img.width - text_width) // 2

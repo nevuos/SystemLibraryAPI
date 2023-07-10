@@ -91,3 +91,9 @@ ENV/
 
 # Mac Archive
 .DS_Store
+
+# Credentials Google Drive
+credentials.json
+
+# Files Backup
+SystemLibraryAPI/backup/

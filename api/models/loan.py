@@ -2,7 +2,7 @@ from api.utils.configurations.extensions import db
 from datetime import datetime, timedelta
 
 
-class Loan(Model):  # type: ignore
+class Loan(db.Model):  # type: ignore
     __tablename__ = 'loan'
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey(

@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, List, Tuple
 from functools import wraps
 from flask import jsonify, request
 
@@ -6,7 +6,7 @@ from flask import jsonify, request
 def validate_required_fields(fields: List[str]) -> Callable[[Callable[..., Tuple[Any, int]]], Callable[..., Tuple[Any, int]]]:
     def decorator(func: Callable[..., Tuple[Any, int]]) -> Callable[..., Tuple[Any, int]]:
         @wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Tuple[Any, int]:
+        def validation_wrapper(*args: Any, **kwargs: Any) -> Tuple[Any, int]:
             data = request.get_json(force=True, silent=True)
             if not data:
                 return jsonify({'error': 'Nenhum dado foi fornecido.'}), 400
@@ -17,5 +17,5 @@ def validate_required_fields(fields: List[str]) -> Callable[[Callable[..., Tuple
                 return jsonify({'error': 'Campos obrigatórios ausentes ou vazios: {}'.format(', '.join(missing_fields))}), 400
 
             return func(*args, **kwargs)
-        return wrapper
+        return validation_wrapper
     return decorator

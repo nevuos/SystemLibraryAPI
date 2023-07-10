@@ -14,4 +14,7 @@ class Book(db.Model):  # type: ignore
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     deactivated_at = db.Column(db.DateTime)
 
+    total_copies = db.Column(db.Integer, nullable=False, default=0)
+    available_copies = db.Column(db.Integer, nullable=False, default=0)
+
     loans = db.relationship('Loan', backref='book', lazy=True)

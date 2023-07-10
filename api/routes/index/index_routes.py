@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ...utils.api_info.api_index import api_info
+from ...utils.api_info.api_info import api_info
 
 index_bp = Blueprint('index', __name__)
 
