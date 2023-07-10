@@ -16,6 +16,7 @@ INFO_UP_TO_DATE = "Está na versão mais recente."
 INFO_UPDATE_SUCCESS = "Versão atualizada para {version}."
 ERROR_REQUEST_FAILURE = "Falha na solicitação: {error}"
 ERROR_CODE_UPDATE_FAILURE = "Erro ao atualizar o código: {error}"
+ERROR_UNSUPPORTED_OS = "Sistema operacional não suportado."
 
 # Mensagens relacionadas ao backup local
 INFO_SOURCE_FOLDER_MISSING = "A pasta de origem {source_folder} não existe!"

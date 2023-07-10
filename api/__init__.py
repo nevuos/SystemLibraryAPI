@@ -10,15 +10,16 @@ from api.utils.configurations.extensions import db, migrate
 from api.utils.cache.cache import init_cache
 from api.utils.functions.important.check_internet_function import check_internet
 from api.utils.logger.logger import setup_logger
-#from api.utils.update.check_update_function import check_update
 from api.utils.functions.important.check_database_function import check_database
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from api.utils.update.update_application import update_application
 
 def create_app():
     """
     Cria e configura o aplicativo Flask.
     """
+    update_application(logger)
     flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
 
@@ -29,9 +30,8 @@ def create_app():
     with flask_app.app_context():
         db.create_all()
         logger = setup_logger(__name__)
-    
+
         check_internet(logger)
-        #check_update(logger)
         check_database(flask_app, logger)
         scheduler = BackgroundScheduler()
         scheduler.add_job(lambda: do_backup(logger), CronTrigger(hour=12))

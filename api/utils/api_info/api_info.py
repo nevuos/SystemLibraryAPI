@@ -1,3 +1,11 @@
+import os
+from api.utils.update.app_operations import get_current_version
+
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
+version_file_path = os.path.abspath(os.path.join(script_dir, '..', '..', '..', 'version.txt'))
+current_version = get_current_version(version_file_path)
+
 api_info = {
     "message": "Bem-vindo à API da Biblioteca",
     "endpoints": {
@@ -34,5 +42,5 @@ api_info = {
         "/students/active": "GET: Obter estudantes ativos",
         "/students/inactive": "GET: Obter estudantes inativos",
     },
-    "version": "0.1.0"
+    "version": current_version,
 }

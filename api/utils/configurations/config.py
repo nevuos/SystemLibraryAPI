@@ -1,7 +1,6 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from dotenv import load_dotenv
 
 # Importar pysqlcipher3
 import pysqlcipher3.dbapi2 as sqlite
