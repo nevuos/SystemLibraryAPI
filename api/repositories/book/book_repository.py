@@ -1,12 +1,11 @@
 from typing import Any, Dict
-from typing import Any
 import pytz
 from flask import url_for
 from datetime import datetime
 from api.models.book import Book
 from api.models.code_sequence import CodeSequence
 from api.utils.configurations.extensions import db
-from api.utils.functions.barcode_function import generate_barcode
+from api.utils.functions.barcode.barcode_function import generate_barcode
 from api.utils.cache.cache import cache
 
 
@@ -16,14 +15,16 @@ class BookNotFoundError(Exception):
 
 class BookRepository:
     @staticmethod
-    def create(title, author, category) -> Book:
-        with db.session.begin_nested():
-            code_sequence = CodeSequence.query.with_for_update().first()
-            if code_sequence is None:
-                code_sequence = CodeSequence(id=1)
-                db.session.add(code_sequence)
-            bar_code = code_sequence.id
-            code_sequence.id += 1
+    def create(title, author, category, total_copies) -> Book:
+        if total_copies <= 0:
+            raise ValueError("Total copies must be a positive integer.")
+
+        code_sequence = CodeSequence.query.with_for_update().first()
+        if code_sequence is None:
+            code_sequence = CodeSequence(id=1)
+            db.session.add(code_sequence)
+        bar_code = code_sequence.id
+        code_sequence.id += 1
 
         db.session.commit()
 
@@ -39,14 +40,16 @@ class BookRepository:
             author=author,
             category=category,
             barcode_download_url=barcode_download_url,
-            created_at=created_at
+            created_at=created_at,
+            total_copies=total_copies,
+            available_copies=total_copies
         )
         db.session.add(book)
         db.session.commit()
 
-        if not book:
+        if not book or book.total_copies != total_copies:
             raise BookNotFoundError(
-                f"Book {title} by {author} in {category} could not be created.")
+                f"Book {title} by {author} in {category} with total copies {total_copies} could not be created.")
 
         return book
 
@@ -110,6 +113,8 @@ class BookRepository:
             'category': book.category,
             'bar_code': book.bar_code,
             'barcode_download_url': book.barcode_download_url,
+            'total_copies': book.total_copies,
+            'available_copies': book.available_copies,
             'created_at': book.created_at.strftime('%d/%m/%Y %H:%M:%S'),
             'status': 'active' if book.active else 'inactive'
         }
@@ -128,7 +133,9 @@ class BookRepository:
             'id': book.id,
             'title': book.title,
             'author': book.author,
-            'category': book.category
+            'category': book.category,
+            'total_copies': book.total_copies,
+            'available_copies': book.available_copies
         }
 
     @staticmethod

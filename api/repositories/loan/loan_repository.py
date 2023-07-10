@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from api.models.loan import Loan
 from api.models.book import Book
 from api.models.student import Student
-from api.utils.functions.holiday_function import is_business_day
+from api.utils.functions.holiday.holiday_function import is_business_day
 from api.utils.cache.cache import cache
 from typing import List, Dict, Any, Union, Optional
 
@@ -30,11 +30,20 @@ class LoanRepository:
 
         if not student:
             raise StudentNotFoundError(f"No student found with id {student_id}")
+        if not student.active:  # Verificar se o estudante está ativo
+            raise ValueError("Student is inactive. Cannot create loan.")
+
         if not book:
             raise BookNotFoundError(f"No book found with id {book_id}")
+        if not book.active:  # Verificar se o livro está ativo
+            raise ValueError("Book is inactive. Cannot create loan.")
+
+        if book.available_copies <= 0:
+            raise ValueError("No available copies of the book.")
 
         new_loan = Loan(student_id=student_id, book_id=book_id)
         db.session.add(new_loan)
+        book.available_copies -= 1
         db.session.commit()
 
         receipt = {
@@ -56,6 +65,10 @@ class LoanRepository:
         loan.returned = True
         brt_timezone = pytz.timezone('America/Sao_Paulo')
         loan.deactivated_at = datetime.now(brt_timezone)
+        db.session.commit()
+
+        book = Book.query.get(loan.book_id)
+        book.available_copies += 1
         db.session.commit()
 
         return {'deactivated_at': loan.deactivated_at.strftime('%d/%m/%Y %H:%M:%S')}
@@ -106,6 +119,10 @@ class LoanRepository:
             fine = (days_overdue - 7) * 0.50
 
         loan.returned = True
+        db.session.commit()
+
+        book = Book.query.get(loan.book_id)
+        book.available_copies += 1
         db.session.commit()
 
         return {

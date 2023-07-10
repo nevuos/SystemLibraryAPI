@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 from api.request_handlers.student.student_handlers import (
     handle_create_student_request,
     handle_get_all_students_request,

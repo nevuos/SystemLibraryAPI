@@ -7,7 +7,7 @@ from api.functions.loan import (
     search_loan
 )
 from api.utils.validators.generic.validate_required import validate_required_fields
-from api.request_handlers.errors.error_handlers import handle_errors
+from api.utils.handlers.error_handlers import handle_errors
 
 
 @handle_errors
