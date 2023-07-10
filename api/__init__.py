@@ -19,7 +19,6 @@ def create_app():
     """
     Cria e configura o aplicativo Flask.
     """
-    update_application(logger)
     flask_app = Flask(__name__)
     flask_app.config.from_object(Config)
 
@@ -31,6 +30,7 @@ def create_app():
         db.create_all()
         logger = setup_logger(__name__)
 
+        update_application(logger)
         check_internet(logger)
         check_database(flask_app, logger)
         scheduler = BackgroundScheduler()
