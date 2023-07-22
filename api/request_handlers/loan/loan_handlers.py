@@ -1,4 +1,5 @@
 from flask import request, jsonify
+from flask_jwt_extended import jwt_required
 from api.functions.loan import (
     create_loan,
     return_loan,
@@ -10,6 +11,7 @@ from api.utils.validators.generic.validate_required import validate_required_fie
 from api.utils.handlers.error_handlers import handle_errors
 
 
+@jwt_required()
 @handle_errors
 @validate_required_fields(['student_id', 'book_id'])
 def handle_create_loan_request():
@@ -18,30 +20,35 @@ def handle_create_loan_request():
     return jsonify({'message': 'Loan created successfully', 'loan': loan}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_return_loan_request(loan_id):
     loan = return_loan(loan_id)
     return jsonify({'message': 'Loan returned successfully', 'loan': loan}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_deactivate_loan_request(loan_id):
     loan = deactivate_loan(loan_id)
     return jsonify({'message': 'Loan deactivated successfully', 'loan': loan}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_reactivate_loan_request(loan_id):
     loan = reactivate_loan(loan_id)
     return jsonify({'message': 'Loan reactivated successfully', 'loan': loan}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_loan_by_id_request(loan_id):
     loan = search_loan.get_loan_by_id(loan_id)
     return jsonify({'message': 'Loan retrieved successfully', 'loan': loan}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_loans_by_student_id_request():
     student_id = request.args.get('student_id')
@@ -52,6 +59,7 @@ def handle_search_loans_by_student_id_request():
     return jsonify({'message': 'Loans retrieved successfully', 'loans': loans}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_loans_by_book_id_request():
     book_id = request.args.get('book_id')
@@ -61,6 +69,7 @@ def handle_search_loans_by_book_id_request():
     return jsonify({'message': 'Loans retrieved successfully', 'loans': loans}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_loans_by_loan_date_range_request():
     start_date = request.args.get('start_date')
@@ -72,6 +81,7 @@ def handle_search_loans_by_loan_date_range_request():
     return jsonify({'message': 'Loans retrieved successfully', 'loans': loans}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_loans_by_return_date_range_request():
     start_date = request.args.get('start_date')
@@ -83,6 +93,7 @@ def handle_search_loans_by_return_date_range_request():
     return jsonify({'message': 'Loans retrieved successfully', 'loans': loans}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_all_loans_request():
     page = request.args.get('page', default=1, type=int)
@@ -91,6 +102,7 @@ def handle_get_all_loans_request():
     return jsonify({'message': 'Loans retrieved successfully', 'loans': loans}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_loans_returned_request():
     page = request.args.get('page', default=1, type=int)
@@ -99,6 +111,7 @@ def handle_search_loans_returned_request():
     return jsonify({'message': 'Returned loans retrieved successfully', 'loans': loans}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_loans_not_returned_request():
     page = request.args.get('page', default=1, type=int)

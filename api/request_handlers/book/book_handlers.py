@@ -1,4 +1,5 @@
 from flask import request, jsonify
+from flask_jwt_extended import jwt_required
 from api.functions.book.create_book import create_book
 from api.functions.book.deactivate_book import deactivate_book
 from api.functions.book.reactivate_book import reactivate_book
@@ -18,6 +19,9 @@ from api.utils.validators.generic.validate_required import validate_required_fie
 from api.utils.handlers.error_handlers import handle_errors
 
 
+
+
+@jwt_required()
 @handle_errors
 @validate_required_fields(['title', 'author', 'category', 'total_copies'])
 def handle_create_book_request():
@@ -32,6 +36,7 @@ def handle_create_book_request():
     return jsonify(response_data), 201
 
 
+@jwt_required()
 @handle_errors
 def handle_deactivate_book_request(book_id):
     response_data = deactivate_book.deactivate_book(book_id)
@@ -39,6 +44,7 @@ def handle_deactivate_book_request(book_id):
     return jsonify(response_data), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_books_request():
     page = request.args.get('page', 1, type=int)
@@ -47,6 +53,7 @@ def handle_get_books_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_reactivate_book_request(book_id):
     response_data = reactivate_book.reactivate_book(book_id)
@@ -54,6 +61,7 @@ def handle_reactivate_book_request(book_id):
     return jsonify(response_data), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_books_by_title_request():
     title = request.args.get('title')
@@ -63,6 +71,7 @@ def handle_search_books_by_title_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_books_by_author_request():
     author = request.args.get('author')
@@ -72,6 +81,7 @@ def handle_search_books_by_author_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_books_by_category_request():
     category = request.args.get('category')
@@ -81,6 +91,7 @@ def handle_search_books_by_category_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_search_books_by_bar_code_request():
     bar_code = request.args.get('bar_code')
@@ -90,6 +101,7 @@ def handle_search_books_by_bar_code_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_book_by_id_request(book_id):
     response_data = search_book_by_id(book_id)
@@ -97,6 +109,7 @@ def handle_get_book_by_id_request(book_id):
     return jsonify(response_data), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_update_book_request(book_id):
     data = request.get_json()
@@ -106,6 +119,7 @@ def handle_update_book_request(book_id):
     return jsonify(response_data), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_books_by_date_range_request():
     start_date = request.args.get('start_date')
@@ -116,6 +130,7 @@ def handle_get_books_by_date_range_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_inactive_books_request():
     page = request.args.get('page', 1, type=int)
@@ -124,6 +139,7 @@ def handle_get_inactive_books_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_active_books_request():
     page = request.args.get('page', 1, type=int)
@@ -132,6 +148,7 @@ def handle_get_active_books_request():
     return jsonify({'message': 'Livros recuperados com sucesso', 'books': books}), 200
 
 
+@jwt_required()
 @handle_errors
 def handle_get_all_books_request():
     page = request.args.get('page', 1, type=int)
