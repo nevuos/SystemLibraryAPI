@@ -27,3 +27,7 @@ INFO_BACKUP_CREATED_LOCALLY = "Backup de {zip_file_name} realizado localmente co
 INFO_BACKUP_FOLDER_MISSING = "A pasta de backup local {backup_folder} não existe!"
 INFO_BACKUP_UPLOAD_SUCCESS = "Backup de {file_name} para Google Drive realizado com sucesso!"
 ERROR_BACKUP_UPLOAD_FAILURE = "Falha ao fazer backup de {file_name} para Google Drive. Tentativa {attempt}. Erro: {error}"
+
+# Mensagens relacionadas ao serviço de e-mail
+INFO_EMAIL_SENT = "Email enviado. Status code: {status_code}."
+ERROR_EMAIL_SEND_FAILURE = "Ocorreu um erro ao enviar o e-mail: {error}."

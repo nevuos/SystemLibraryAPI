@@ -23,9 +23,13 @@ class TimeoutError(TimeoutError):
 class UnexpectedError(Exception):
     pass
 
+class EmailAlreadyConfirmedError(ValueError):
+    pass
+
 
 error_mapping = {
     InvalidRequestError: (400, "Invalid request"),
+    EmailAlreadyConfirmedError: (400, "Email already confirmed"),
     AuthenticationError: (401, "Authentication failed"),
     ResourceNotFoundError: (404, "Resource not found"),
     PermissionDeniedError: (403, "Permission denied"),

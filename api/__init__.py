@@ -34,7 +34,7 @@ def create_app():
     JWTManager(flask_app)
 
     limiter.init_app(flask_app)
-
+    
     db.init_app(flask_app)
     migrate.init_app(flask_app, db)
 
